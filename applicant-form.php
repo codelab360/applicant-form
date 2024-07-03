@@ -34,6 +34,8 @@ class Applicant_Form {
     private function includes() {
         require_once APPLICANT_FORM_PLUGIN_DIR . 'includes/class-applicant-form-db.php';
         require_once APPLICANT_FORM_PLUGIN_DIR . 'includes/class-email-handler.php';
+        require_once APPLICANT_FORM_PLUGIN_DIR . 'includes/class-applicant-form-frontend.php';
+        require_once APPLICANT_FORM_PLUGIN_DIR . 'includes/class-applicant-form-admin.php';
     }
 
     private function init_hooks() {
@@ -41,6 +43,7 @@ class Applicant_Form {
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
         new Applicant_Form_Frontend();
+        new Applicant_Form_Admin();
 
         new Email_Handler();
     }
