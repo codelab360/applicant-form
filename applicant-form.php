@@ -51,6 +51,9 @@ class Applicant_Form {
     public function enqueue_scripts() {
         wp_enqueue_style( 'tailwind_css', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css' );
         wp_enqueue_script( 'applicant_form_script', APPLICANT_FORM_PLUGIN_URL . 'js/applicant-form.js', array('jquery'), '1.0', true);
+        wp_localize_script('applicant_form_script', 'applicant_form_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+        ));
     }
 }
 
