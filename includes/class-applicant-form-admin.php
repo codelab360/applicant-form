@@ -8,6 +8,7 @@ class Applicant_Form_Admin {
         add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_applicant_form_styles' ) );
         add_action( 'wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
+        add_action( 'admin_notices', array( $this, 'display_admin_notices' ) );
     }
 
     public function add_admin_menu() {
@@ -153,6 +154,8 @@ class Applicant_Form_Admin {
     }
     
 
+    
+
     public function add_dashboard_widget() {
         wp_add_dashboard_widget(
             'applicant_form_dashboard_widget',
@@ -191,8 +194,28 @@ class Applicant_Form_Admin {
         }
     }
     
-    
     public function enqueue_applicant_form_styles() {
         wp_enqueue_style( 'tailwind', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css' );
     }
+
+    public function display_admin_notices() {
+        // Check if WP Mail SMTP plugin is active
+        if ( is_plugin_active( 'wp-mail-smtp/wp_mail_smtp.php' ) ) {
+            // Check if SMTP is configured properly
+            if ( wp_mail_smtp()->is_mailer_active() ) {
+                return; // SMTP is configured and active, no notice needed
+            } else {
+                echo '<div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mt-4" role="alert">
+                    <p class="font-bold">Warning</p>
+                    <p>Please configure WP Mail SMTP plugin to ensure reliable email delivery for the Applicant Form plugin.</p>
+                </div>';
+            }
+        } else {
+            echo '<div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mt-4" role="alert">
+                <p class="font-bold">Warning</p>
+                <p>Please install and activate WP Mail SMTP plugin for reliable email delivery with the Applicant Form plugin.</p>
+            </div>';
+        }
+    }
+    
 }
