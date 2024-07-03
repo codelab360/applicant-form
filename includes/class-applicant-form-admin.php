@@ -26,12 +26,34 @@ class Applicant_Form_Admin {
         global $wpdb;
         $table_name = $wpdb->prefix . 'applicant_submissions';
     
-        // Fetch all submissions
-        $submissions = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY submission_date DESC" );
+        // Handle search
+        $search_query = isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '';
+        $where_clause = '';
+        if ( ! empty( $search_query ) ) {
+            $where_clause = $wpdb->prepare(
+                " WHERE first_name LIKE %s OR last_name LIKE %s OR email_address LIKE %s OR post_name LIKE %s",
+                '%' . $wpdb->esc_like( $search_query ) . '%',
+                '%' . $wpdb->esc_like( $search_query ) . '%',
+                '%' . $wpdb->esc_like( $search_query ) . '%',
+                '%' . $wpdb->esc_like( $search_query ) . '%'
+            );
+        }
+    
+        // Fetch submissions based on search query
+        $submissions = $wpdb->get_results( "SELECT * FROM $table_name $where_clause ORDER BY submission_date DESC" );
     
         ?>
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold text-gray-900 my-6">Applicant Submissions</h1>
+    
+            <!-- Search Box -->
+            <form method="get" class="mb-4">
+                <div class="flex items-center">
+                    <input type="hidden" name="page" value="<?php echo esc_attr( $_GET['page'] ); ?>">
+                    <input type="search" id="applicant-search-input" name="s" value="<?php echo esc_attr( $search_query ); ?>" placeholder="Search Submissions..." class="w-full px-3 py-2 border rounded-lg mr-2 focus:outline-none focus:border-blue-500">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none">Search</button>
+                </div>
+            </form>
     
             <!-- Submissions Table -->
             <div class="overflow-x-auto">
@@ -77,7 +99,6 @@ class Applicant_Form_Admin {
         </div>
         <?php
     }
-    
     
 
     public function add_dashboard_widget() {
