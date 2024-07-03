@@ -122,9 +122,22 @@ class Applicant_Form_Frontend {
                 'submission_date' => current_time('mysql'),
             )
         );
+
+        // Send email notification
+        $email_handler = new Email_Handler();
+        $recipient = $email_address;
+        $email_data = array(
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'post_name' => $post_name,
+        );
+
+        $email_handler->send_email('new_submission', $recipient, $email_data);
     
         $this->set_transient_message('success', 'Application submitted successfully.');
         wp_send_json_success(array('message' => 'Application submitted successfully.'));
+
+        wp_redirect( esc_url( $_SERVER['REQUEST_URI'] ) );
     }
     
 

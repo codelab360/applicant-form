@@ -16,7 +16,10 @@ class Email_Handler {
                 return false;
         }
 
-        $headers = array( 'Content-Type: text/html; charset=UTF-8' );
+        $headers = array( 
+            'Content-Type: text/html; charset=UTF-8',
+            'Form: Test User <test@example.com>',
+        );
 
         return wp_mail( $recipient, $subject, $message, $headers );
     }
