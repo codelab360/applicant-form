@@ -39,8 +39,26 @@ class Applicant_Form_Admin {
             );
         }
     
-        // Fetch submissions based on search query
-        $submissions = $wpdb->get_results( "SELECT * FROM $table_name $where_clause ORDER BY submission_date DESC" );
+        // Sorting
+        $orderby = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : 'submission_date';
+        $order = isset( $_GET['order'] ) && strtoupper( $_GET['order'] ) === 'DESC' ? 'DESC' : 'ASC';
+        $order_sql = "$orderby $order";
+    
+        // Pagination
+        $items_per_page = 10;
+        $current_page = isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1;
+        $offset = ( $current_page - 1 ) * $items_per_page;
+    
+        // Fetch total number of submissions for pagination
+        $total_items = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name $where_clause" );
+        $total_pages = ceil( $total_items / $items_per_page );
+    
+        // Fetch submissions based on search, sorting, and pagination
+        $submissions = $wpdb->get_results( $wpdb->prepare(
+            "SELECT * FROM $table_name $where_clause ORDER BY $order_sql LIMIT %d OFFSET %d",
+            $items_per_page,
+            $offset
+        ) );
     
         ?>
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -66,7 +84,26 @@ class Applicant_Form_Admin {
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Post Name</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CV</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submission Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <div class="flex items-center">
+                                    <a href="<?php echo esc_url(admin_url('admin.php') . '?page=applicant-submissions&orderby=submission_date&order=' . ($order === 'ASC' ? 'DESC' : 'ASC')); ?>" class="flex items-center">
+                                        <span>Submission Date</span>
+                                        <?php if ($orderby === 'submission_date') : ?>
+                                            <svg class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                                <?php if ($order === 'ASC') : ?>
+                                                    <path fill-rule="evenodd" d="M8.293 6.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1-1.414 1.414L10 9.414V16a1 1 0 0 1-2 0V9.414L5.707 11.707a1 1 0 1 1-1.414-1.414l4-4z" clip-rule="evenodd" />
+                                                <?php else : ?>
+                                                    <path fill-rule="evenodd" d="M11.707 13.707a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 10.586V4a1 1 0 0 1 2 0v6.586l2.293-2.293a1 1 0 0 1 1.414 1.414l-4 4z" clip-rule="evenodd" />
+                                                <?php endif; ?>
+                                            </svg>
+                                        <?php else : ?>
+                                            <svg class="h-4 w-4 ml-1 opacity-0" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M8.293 6.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1-1.414 1.414L10 9.414V16a1 1 0 0 1-2 0V9.414L5.707 11.707a1 1 0 1 1-1.414-1.414l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                        <?php endif; ?>
+                                    </a>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -95,6 +132,21 @@ class Applicant_Form_Admin {
                         ?>
                     </tbody>
                 </table>
+            </div>
+    
+            <!-- Pagination -->
+            <div class="mt-6">
+                <?php
+                $pagination_base = esc_url(admin_url('admin.php') . '?page=applicant-submissions&s=' . urlencode($search_query) . '&orderby=' . urlencode($orderby) . '&order=' . urlencode($order) . '&paged=%#%');
+                echo paginate_links( array(
+                    'base' => $pagination_base,
+                    'format' => '',
+                    'current' => $current_page,
+                    'total' => $total_pages,
+                    'prev_text' => __('&laquo; Previous'),
+                    'next_text' => __('Next &raquo;'),
+                ) );
+                ?>
             </div>
         </div>
         <?php
