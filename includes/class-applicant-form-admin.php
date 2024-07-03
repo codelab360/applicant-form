@@ -46,7 +46,7 @@ class Applicant_Form_Admin {
         $order_sql = "$orderby $order";
     
         // Pagination
-        $items_per_page = 10;
+        $items_per_page = 8;
         $current_page = isset( $_GET['paged'] ) ? absint( $_GET['paged'] ) : 1;
         $offset = ( $current_page - 1 ) * $items_per_page;
     
@@ -136,7 +136,7 @@ class Applicant_Form_Admin {
             </div>
     
             <!-- Pagination -->
-            <div class="mt-6">
+            <div class="mt-4 text-base text-gray-500 space-x-2 ">
                 <?php
                 $pagination_base = esc_url(admin_url('admin.php') . '?page=applicant-submissions&s=' . urlencode($search_query) . '&orderby=' . urlencode($orderby) . '&order=' . urlencode($order) . '&paged=%#%');
                 echo paginate_links( array(
