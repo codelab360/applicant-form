@@ -92,20 +92,23 @@ class Applicant_Form_Admin {
         global $wpdb;
         $table_name = $wpdb->prefix . 'applicant_submissions';
         $results = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY submission_date DESC LIMIT 5" );
-
+    
         if ( $results ) {
-            echo '<ul>';
-            foreach ( $results as $row ) {
-                echo '<li>' . esc_html( $row->first_name . ' ' . $row->last_name ) . ' - ' . esc_html( $row->post_name ) . ' (' . esc_html( $row->submission_date ) . ')</li>';
-            }
-            echo '</ul>';
+            ?>
+            <div class="p-4 bg-white shadow rounded">
+                <h2 class="text-lg font-semibold mb-5">Recent Applicant Submissions</h2>
+                <ul>
+                    <?php foreach ($results as $row) : ?>
+                        <li><?php echo esc_html($row->first_name . ' ' . $row->last_name) . ' - ' . esc_html($row->post_name) . ' (' . esc_html($row->submission_date) . ')'; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php
         } else {
             echo '<p>No recent submissions.</p>';
         }
     }
     
-    
-
     public function enqueue_applicant_form_styles() {
         wp_enqueue_style( 'tailwind', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css' );
     }
