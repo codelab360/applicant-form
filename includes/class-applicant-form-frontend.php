@@ -92,3 +92,5 @@ class Applicant_Form_Frontend {
             wp_redirect( home_url() );
         }
     }
+
+}
