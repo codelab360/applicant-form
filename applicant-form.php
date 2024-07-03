@@ -11,6 +11,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+require_once APPLICANT_FORM_PLUGIN_DIR . 'includes/shortcode.php';
+require_once APPLICANT_FORM_PLUGIN_DIR . 'includes/email-functions.php';
+
 add_action('wp_enqueue_scripts', 'applicant_form_enqueue_scripts');
 
 function applicant_form_enqueue_scripts()
