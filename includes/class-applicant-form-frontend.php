@@ -43,39 +43,41 @@ class Applicant_Form_Frontend {
     }
 
     public function process_form_submission() {
-
-        if ( isset( $_POST['submit_applicant_form'] ) ) {
+        if (isset($_POST['submit_applicant_form'])) {
             global $wpdb;
-
+    
             $table_name = $wpdb->prefix . 'applicant_submissions';
-
-            $first_name = sanitize_text_field( $_POST['first_name'] );
-            $last_name = sanitize_text_field( $_POST['last_name'] );
-            $present_address = sanitize_textarea_field( $_POST['present_address'] );
-            $email_address = sanitize_email( $_POST['email_address'] );
-            $mobile_no = sanitize_text_field( $_POST['mobile_no'] );
-            $post_name = sanitize_text_field( $_POST['post_name'] );
-
+    
+            $first_name = sanitize_text_field($_POST['first_name']);
+            $last_name = sanitize_text_field($_POST['last_name']);
+            $present_address = sanitize_textarea_field($_POST['present_address']);
+            $email_address = sanitize_email($_POST['email_address']);
+            $mobile_no = sanitize_text_field($_POST['mobile_no']);
+            $post_name = sanitize_text_field($_POST['post_name']);
+    
             if (isset($_FILES['cv'])) {
                 $cv = $_FILES['cv'];
-
+    
                 if ($cv['error'] !== UPLOAD_ERR_OK) {
-                    wp_die('Upload failed with error code ' . $cv['error']);
+                    $this->set_transient_message('error', 'Upload failed with error code ' . $cv['error']);
                 }
-
+    
+                if (!function_exists('wp_handle_upload')) {
+                    require_once ABSPATH . 'wp-admin/includes/file.php';
+                }
+    
                 $file_name = sanitize_file_name($cv['name']);
-
                 $upload = wp_handle_upload($cv, array('test_form' => false));
-
+    
                 if ($upload && !isset($upload['error'])) {
                     $cv_url = $upload['url'];
                 } else {
-                    wp_die('Upload failed');
+                    $this->set_transient_message('error', 'Upload failed: ' . $upload['error']);
                 }
+            } else {
+                $this->set_transient_message('error', 'No file uploaded.');
             }
-
-            $cv_url = $upload['url'];
-
+    
             $wpdb->insert(
                 $table_name,
                 array(
@@ -85,12 +87,18 @@ class Applicant_Form_Frontend {
                     'email_address' => $email_address,
                     'mobile_no' => $mobile_no,
                     'post_name' => $post_name,
-                    'cv' => $cv_url
+                    'cv' => $cv_url,
+                    'submission_date' => current_time('mysql') // Add submission date
                 )
             );
-
-            wp_redirect( home_url() );
+    
+            $this->set_transient_message('success', 'Application submitted successfully.');
         }
+    }
+    
+
+    private function set_transient_message($type, $message) {
+        set_transient('applicant_form_message', array('type' => $type, 'message' => $message), 30);
     }
 
 }
