@@ -97,9 +97,18 @@ class Applicant_Form_Admin {
             ?>
             <div class="p-4 bg-white shadow rounded">
                 <h2 class="text-lg font-semibold mb-5">Recent Applicant Submissions</h2>
-                <ul>
+                <ul class="divide-y divide-gray-200">
                     <?php foreach ($results as $row) : ?>
-                        <li><?php echo esc_html($row->first_name . ' ' . $row->last_name) . ' - ' . esc_html($row->post_name) . ' (' . esc_html($row->submission_date) . ')'; ?></li>
+                        <li class="flex items-center justify-between py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 truncate font-semibold"><?php echo esc_html($row->first_name); ?></div>
+                                <div class="text-sm text-gray-500"><?php echo esc_html($row->post_name); ?></div>
+                                <div class="text-sm text-gray-500"><?php echo esc_html(date('Y-m-d', strtotime($row->submission_date))); ?></div>
+                            </div>
+                            <div>
+                                <a href="<?php echo esc_url($row->cv); ?>" class="text-blue-500 hover:text-blue-700">Preview</a>
+                            </div>
+                        </li>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -108,6 +117,7 @@ class Applicant_Form_Admin {
             echo '<p>No recent submissions.</p>';
         }
     }
+    
     
     public function enqueue_applicant_form_styles() {
         wp_enqueue_style( 'tailwind', 'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css' );
