@@ -4,7 +4,13 @@ Plugin Name: Applicant Form
 Description: A plugin to manage applicant information and submissions.
 Version: 0.1
 Author: Pronob Mozumder
- */
+Author URI: https://www.linkedin.com/in/pronob1010
+Requires at least: 5.0 
+Requires PHP: 7.0
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: applicant-form
+*/
 
 // Direct access is not allowed
 if (!defined('ABSPATH')) {
