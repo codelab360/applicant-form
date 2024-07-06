@@ -14,8 +14,14 @@ The **Applicant Form** plugin allows you to manage applicant submissions directl
 2. Upload and activate the plugin through the WordPress plugins screen.
 
 ## Demo
-![image](https://github.com/pronob1010/assignment-applicant-form/assets/44565867/9ae4656c-9203-4a7d-a328-46a47ef60ccd)
-![image](https://github.com/pronob1010/assignment-applicant-form/assets/44565867/db625729-7425-410d-9fdd-7a03ae96b488)
+| ![image2](https://github.com/pronob1010/assignment-applicant-form/assets/44565867/49259396-2826-4da5-950a-37298b49a28c) | ![image1](https://github.com/pronob1010/assignment-applicant-form/assets/44565867/9ae4656c-9203-4a7d-a328-46a47ef60ccd) | 
+| --- | --- |
+| Applicant frontend | Admin widget |
+<br/>
+
+| ![image3](https://github.com/pronob1010/assignment-applicant-form/assets/44565867/db625729-7425-410d-9fdd-7a03ae96b488) |
+| --- |
+| Application list |
 
 
 
