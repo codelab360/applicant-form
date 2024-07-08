@@ -199,6 +199,10 @@ class Applicant_Form_Admin {
     }
 
     public function display_admin_notices() {
+        if (!isset($_GET["page"]) || $_GET["page"] != 'applicant-submissions'){
+            return;
+        }
+
         // Check if WP Mail SMTP plugin is active
         if ( is_plugin_active( 'wp-mail-smtp/wp_mail_smtp.php' ) ) {
             // Check if SMTP is configured properly
